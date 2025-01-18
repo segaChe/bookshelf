@@ -1,0 +1,20 @@
+{
+  "name": "bookshelf",
+  "version": "0.0.1",
+  "main": "index.js",
+  "repository": "git@github.com:segaChe/bookshelf.git",
+  "author": "Sergey Chernoskutov <chernoskytofff@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "pm2 start ./src/index.js --watch"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "pm2": "^5.4.3",
+    "uuid": "^11.0.5",
+    "yargs": "^17.7.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}

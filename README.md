@@ -1,1 +1,6 @@
-# bookshelf
+# Bookshelf
+
+### Запуск
+```bash
+yarn start
+```
