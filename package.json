@@ -6,7 +6,8 @@
   "author": "Sergey Chernoskutov <chernoskytofff@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "pm2 start ./src/index.js --watch"
+    "start": "pm2 start ./src/index.js --watch",
+    "dev": "node ./src/index.js"
   },
   "dependencies": {
     "express": "^4.21.2",
