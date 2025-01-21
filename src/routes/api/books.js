@@ -1,6 +1,9 @@
-const express = require('express');
-const Book    = require('../../Book');
-const router  = express.Router();
+const express      = require('express');
+const { v4: uuid } = require('uuid');
+const Book         = require('../../Book');
+const router       = express.Router();
+const coverFileMulter   = require('../../middleware/fileCover');
+const bookFileMulter   = require('../../middleware/fileBook');
 
 module.exports = (store) => {
     router.get('/', (req, res) => {
@@ -106,6 +109,40 @@ module.exports = (store) => {
             res.json('404 | страница не найдена');
         }
     });
+
+    router.post(
+        '/:id/upload-cover',
+        coverFileMulter.single('cover'),
+        (req, res) => {
+            if (req.file) {
+                const { id }   = req.params;
+                const { path } = req.file;
+                const book     = store.updateBook({ fileCover: path }, id);
+
+                res.json(book);
+            }
+            else {
+                res.json('no file uploaded');
+            }
+        },
+    );
+
+    router.post(
+        '/:id/upload-book',
+        bookFileMulter.single('book'),
+        (req, res) => {
+            if (req.file) {
+                const { id }   = req.params;
+                const { path } = req.file;
+                const book     = store.updateBook({ fileBook: path }, id);
+
+                res.json(book);
+            }
+            else {
+                res.json('no file uploaded');
+            }
+        },
+    );
 
     return router;
 };
