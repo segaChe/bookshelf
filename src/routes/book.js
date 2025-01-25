@@ -62,5 +62,19 @@ module.exports = (store) => {
         }
     });
 
+    router.post('/:id/delete', (req, res) => {
+        const books  = store.getBooks();
+        const { id } = req.params;
+        const idx    = store.getIndex(id);
+
+        if (idx !== -1) {
+            books.splice(idx, 1);
+            res.redirect('/');
+        }
+        else {
+            res.status(404);
+        }
+    });
+
     return router;
 };
