@@ -1,4 +1,5 @@
 const express = require('express');
+const Book    = require('../Book');
 const router  = express.Router();
 
 module.exports = (store) => {
@@ -14,6 +15,29 @@ module.exports = (store) => {
             title: 'New book',
             book : {},
         });
+    });
+
+    router.post('/create', (req, res) => {
+        const {
+                  title,
+                  authors,
+                  description = '',
+              } = req.body;
+
+        if (title && authors) {
+            const newBook = new Book({
+                title,
+                authors,
+                description,
+            });
+            store.addBook(newBook);
+
+            res.status(201);
+            res.redirect(`/book/${newBook.id}`);
+        }
+        else {
+            res.status(400);
+        }
     });
 
     return router;
