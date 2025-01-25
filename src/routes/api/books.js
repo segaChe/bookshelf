@@ -150,7 +150,7 @@ module.exports = (store) => {
             const { id } = req.params;
             const book   = store.getBookById(id);
             const file = book.fileBook;
-            res.download(file, `${ book.name } - ${book.authors.join(',')}`);
+            res.download(file, `${ book.name } - ${book.authors.join(', ')}`);
         },
     );
 

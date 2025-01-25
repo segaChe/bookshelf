@@ -1,0 +1,40 @@
+<%- include('../port/layout-start', {title: title}) -%>
+<%- include('../port/menu') -%>
+
+<div class="min-h-full">
+    <div class="py-10">
+        <header>
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+                <h1 class="text-3xl font-bold tracking-tight text-gray-900">
+                    <%= title %>
+                </h1>
+
+                <div class="flex items-center">
+                    <a href="/book/<%= book.id %>/update"
+                       class="relative inline-flex items-center mr-2 gap-x-1.5 rounded-md bg-white px-2 py-1 text-sm font-semibold hover:text-white shadow-xs hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
+                        Edit
+                    </a>
+
+                    <form action="/book/<%= book.id %>/delete"
+                          method="post">
+                        <button type="submit"
+                                class="relative cursor-pointer inline-flex items-center gap-x-1.5 rounded-md bg-white px-2 py-1 text-sm font-semibold hover:text-white shadow-xs hover:bg-red-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500">
+                            Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 md:flex md:items-center md:justify-between">
+                <div>
+                    <p class=""><%= book.authors.join(', ') %></p>
+                    <p><%= book.description %></p>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<%- include('../port/layout-end') -%>

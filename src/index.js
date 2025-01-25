@@ -12,8 +12,8 @@ const app   = express();
 app.use(express.urlencoded());
 app.set('views', './src/views');
 app.set('view engine', 'ejs');
-app.use('/', indexRouter);
-app.use('/book', bookRouter);
+app.use('/', indexRouter(store));
+app.use('/book', bookRouter(store));
 
 app.use(express.json());
 app.use('/api/user', apiUserRouter);
