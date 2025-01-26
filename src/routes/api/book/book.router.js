@@ -1,9 +1,9 @@
 const express      = require('express');
 const { v4: uuid } = require('uuid');
-const Book         = require('../../Book');
+const Book         = require('../../../model/Book');
 const router       = express.Router();
-const coverFileMulter   = require('../../middleware/fileCover');
-const bookFileMulter   = require('../../middleware/fileBook');
+const coverFileMulter   = require('../../../middleware/fileCover');
+const bookFileMulter   = require('../../../middleware/fileBook');
 
 module.exports = (store) => {
     router.get('/', (req, res) => {

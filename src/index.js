@@ -1,10 +1,10 @@
 const express         = require('express');
 const errorMiddleware = require('./middleware/error');
-const apiUserRouter  = require('./routes/api/user.js');
-const apiBooksRouter = require('./routes/api/books.js');
-const indexRouter = require('./routes/index');
-const bookRouter = require('./routes/book');
-const Store       = require('./Store.js');
+const apiUserRouter   = require('./routes/api/user/user.router');
+const apiBooksRouter  = require('./routes/api/book/book.router');
+const indexRouter     = require('./routes/view/index.router');
+const bookRouter      = require('./routes/view/book/book.router');
+const Store           = require('./model/Store.js');
 
 const store = new Store();
 const app   = express();
