@@ -6,20 +6,30 @@ module.exports = (store) => {
         const { id } = req.params;
         const book   = store.getBookById(id);
 
-        res.render('book/view', {
-            title: book.title,
-            book : book,
-        });
+        if (book) {
+            res.render('book/view', {
+                title: book.title,
+                book : book,
+            });
+        }
+        else {
+            res.redirect('/404');
+        }
     });
 
     router.get('/:id/update', (req, res) => {
         const { id } = req.params;
         const book   = store.getBookById(id);
 
-        res.render('book/update', {
-            title: book.title,
-            book : book,
-        });
+        if (book) {
+            res.render('book/update', {
+                title: book.title,
+                book : book,
+            });
+        }
+        else {
+            res.redirect('/404');
+        }
     });
 
     router.post('/:id/update', (req, res) => {
@@ -58,7 +68,7 @@ module.exports = (store) => {
             res.redirect(`/book/${book.id}`);
         }
         else {
-            res.status(404);
+            res.redirect('/404');
         }
     });
 
@@ -72,7 +82,7 @@ module.exports = (store) => {
             res.redirect('/');
         }
         else {
-            res.status(404);
+            res.redirect('/404');
         }
     });
 
