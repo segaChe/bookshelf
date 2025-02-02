@@ -6,8 +6,10 @@
   "author": "Sergey Chernoskutov <chernoskytofff@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "production": "node ./src/index.js",
+    "development": "node ./src/index.js",
     "start": "pm2 start ./src/index.js --watch",
-    "dev": "node ./src/index.js"
+    "dev": "nodemon ./src/index.js"
   },
   "dependencies": {
     "ejs": "^3.1.10",
