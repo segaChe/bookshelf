@@ -7,7 +7,6 @@
   "license": "MIT",
   "scripts": {
     "production": "node ./src/index.js",
-    "development": "node ./src/index.js",
     "start": "pm2 start ./src/index.js --watch",
     "dev": "nodemon ./src/index.js"
   },
@@ -16,6 +15,7 @@
     "express": "^4.21.2",
     "multer": "^1.4.5-lts.1",
     "pm2": "^5.4.3",
+    "redis": "^4.7.0",
     "uuid": "^11.0.5",
     "yargs": "^17.7.2"
   },
