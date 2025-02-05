@@ -5,11 +5,10 @@ module.exports = (client) => {
     index.get('/:bookId', async (req, res) => {
         const { bookId } = req.params;
 
-        // get increment by id
         try {
             const value = await client.get(bookId);
             res.status(200);
-            res.json({ value });
+            res.json({ counter: value });
         }
         catch (error) {
             console.error(error);
@@ -18,9 +17,10 @@ module.exports = (client) => {
 
     index.post('/:bookId/incr', async (req, res) => {
         const { bookId } = req.params;
-        // increase counter
+
         try {
-            await client.incr(bookId);
+            const value = await client.incr(bookId);
+            res.json({ counter: value });
         }
         catch (error) {
             console.error(error);

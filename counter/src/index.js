@@ -8,7 +8,7 @@ const redisClient = require('./redisClient');
 
 const app   = express();
 app.use(express.json());
-app.use('/counter', router(redisClient));
+app.use('/', router(redisClient));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
