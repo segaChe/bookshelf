@@ -1,16 +1,27 @@
 const express = require('express');
 const router  = express.Router();
 
-module.exports = (store) => {
-    router.get('/:id', (req, res) => {
+module.exports = (store, counterConnector) => {
+
+    router.get('/:id', async (req, res) => {
         const { id } = req.params;
         const book   = store.getBookById(id);
 
         if (book) {
-            res.render('book/view', {
-                title: book.title,
-                book : book,
-            });
+            try {
+                // todo: сомнительное решение
+                await counterConnector.getBookCountById(id, (data) => {
+                    res.render('book/view', {
+                        book,
+                        counter: Number(data.counter) + 1,
+                        title  : book.title,
+                    });
+                    counterConnector.increaseBookCounterById(id);
+                });
+            }
+            catch (error) {
+                console.log(error);
+            }
         }
         else {
             res.redirect('/404');
