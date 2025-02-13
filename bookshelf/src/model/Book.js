@@ -13,7 +13,8 @@ class Book {
         },
         id = uuid(),
     ) {
-        this.id          = id;
+        // так как id уникальны и книги не сохраняются добавлен новый формат id для проверки
+        this.id          = `${title.toLowerCase().trim()}_${authors.toLowerCase().trim()}` ; // id;
         this.title       = title;
         this.description = description;
         this.authors     = authors;
