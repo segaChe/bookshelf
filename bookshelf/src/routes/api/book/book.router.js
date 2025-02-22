@@ -1,16 +1,21 @@
-const express      = require('express');
-const { v4: uuid } = require('uuid');
-const Book         = require('../../../model/Book');
-const router       = express.Router();
-const coverFileMulter   = require('../../../middleware/fileCover');
-const bookFileMulter   = require('../../../middleware/fileBook');
+const express         = require('express');
+const Book            = require('../../../models/Book');
+const router          = express.Router();
+const coverFileMulter = require('../../../middleware/fileCover');
+const bookFileMulter  = require('../../../middleware/fileBook');
 
-module.exports = (store) => {
-    router.get('/', (req, res) => {
-        res.json(store.getBooks());
+module.exports = () => {
+    router.get('/', async (req, res) => {
+        try {
+            const books = await Book.find().select('-__v');
+            res.json(books);
+        }
+        catch (err) {
+            res.status(500).json(err);
+        }
     });
 
-    router.post('/', (req, res) => {
+    router.post('/', async (req, res) => {
         const {
                   title,
                   authors,
@@ -29,10 +34,16 @@ module.exports = (store) => {
                 fileCover,
                 fileName,
             });
-            store.addBook(newBook);
 
-            res.status(201);
-            res.json(newBook);
+            try {
+                await newBook.save();
+
+                res.status(201);
+                res.json(newBook);
+            }
+            catch (err) {
+                res.status(500).json(err);
+            }
         }
         else {
             res.status(400);
@@ -40,21 +51,25 @@ module.exports = (store) => {
         }
     });
 
-    router.get('/:id', (req, res) => {
+    router.get('/:id', async (req, res) => {
         const { id } = req.params;
-        const book   = store.getBookById(id);
 
-        if (book) {
-            res.json(book);
+        try {
+            const book = await Book.findById(id).select('-__v');
+            if (book) {
+                res.json(book);
+            }
+            else {
+                res.status(404);
+                res.json('404 | страница не найдена');
+            }
         }
-        else {
-            res.status(404);
-            res.json('404 | страница не найдена');
+        catch (e) {
+            res.status(500).json(e);
         }
-
     });
 
-    router.put('/:id', (req, res) => {
+    router.put('/:id', async (req, res) => {
         const { id }      = req.params;
         const {
                   title,
@@ -85,41 +100,54 @@ module.exports = (store) => {
             updatedBook.fileName = fileName;
         }
 
-        const book = store.updateBook(updatedBook, id);
-        if (book) {
-            res.json(book);
+        try {
+            const book = await Book.findByIdAndUpdate(id, updatedBook);
+            if (book) {
+                res.json(book);
+            }
+            else {
+                res.status(404);
+                res.json('404 | страница не найдена');
+            }
         }
-        else {
-            res.status(404);
-            res.json('404 | страница не найдена');
+        catch (e) {
+            res.status(500).json(e);
         }
     });
 
-    router.delete('/:id', (req, res) => {
-        const books  = store.getBooks();
+    router.delete('/:id', async (req, res) => {
         const { id } = req.params;
-        const idx    = store.getIndex(id);
 
-        if (idx !== -1) {
-            books.splice(idx, 1);
+        try {
+            await Book.deleteOne({ _id: id });
             res.json('ok');
         }
-        else {
-            res.status(404);
-            res.json('404 | страница не найдена');
+        catch (e) {
+            res.status(500).json(e);
         }
     });
 
     router.post(
         '/:id/upload-cover',
         coverFileMulter.single('cover'),
-        (req, res) => {
+        async (req, res) => {
             if (req.file) {
                 const { id }   = req.params;
                 const { path } = req.file;
-                const book     = store.updateBook({ fileCover: path }, id);
 
-                res.json(book);
+                try {
+                    const book = await Book.findByIdAndUpdate(id, { fileCover: path });
+                    if (book) {
+                        res.json(book);
+                    }
+                    else {
+                        res.status(404);
+                        res.json('404 | страница не найдена');
+                    }
+                }
+                catch (e) {
+                    res.status(500).json(e);
+                }
             }
             else {
                 res.json('no file uploaded');
@@ -130,13 +158,24 @@ module.exports = (store) => {
     router.post(
         '/:id/upload-book',
         bookFileMulter.single('book'),
-        (req, res) => {
+        async (req, res) => {
             if (req.file) {
                 const { id }   = req.params;
                 const { path } = req.file;
-                const book     = store.updateBook({ fileBook: path }, id);
 
-                res.json(book);
+                try {
+                    const book = await Book.findByIdAndUpdate(id, { fileBook: path });
+                    if (book) {
+                        res.json(book);
+                    }
+                    else {
+                        res.status(404);
+                        res.json('404 | страница не найдена');
+                    }
+                }
+                catch (e) {
+                    res.status(500).json(e);
+                }
             }
             else {
                 res.json('no file uploaded');
@@ -146,11 +185,17 @@ module.exports = (store) => {
 
     router.get(
         '/:id/download',
-        (req, res) => {
+        async (req, res) => {
             const { id } = req.params;
-            const book   = store.getBookById(id);
-            const file = book.fileBook;
-            res.download(file, `${ book.name } - ${book.authors}`);
+
+            try {
+                const book = await Book.findById(id).select('-__v');
+                const file = book.fileBook;
+                res.download(file, `${book.name} - ${book.authors}`);
+            }
+            catch (e) {
+                res.status(500).json(e);
+            }
         },
     );
 
