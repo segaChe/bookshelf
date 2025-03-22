@@ -1,0 +1,33 @@
+<%- include('../port/layout-start', {title: title}) -%>
+
+<div class="bg-white p-8 rounded-lg shadow-lg w-96 text-center">
+    <!-- Profile Heading -->
+    <h1 class="text-2xl font-bold mb-6">
+        User Profile <span>#<% user.id; %></span>
+    </h1>
+
+    <!-- Profile Information -->
+    <div class="text-left space-y-4 mb-6">
+        <p>
+            <span class="font-semibold">Username:</span>
+            <% user.username; %>
+        </p>
+        <p>
+            <span class="font-semibold">Name:</span>
+            <% user.displayName; %>
+        </p>
+        <% if (user.emails) { %>
+            <p>
+                <span class="font-semibold">Email:</span>
+                <% user.emails[0]; %>
+            </p>
+        <% } %>
+    </div>
+
+    <a class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-300"
+       href="/logout">
+        Logout
+    </a>
+</div>
+
+<%- include('./port/layout-end') -%>
