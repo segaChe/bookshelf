@@ -1,13 +1,13 @@
 import { Book } from './Book';
 
 export abstract class BooksRepository {
-    createBook (book : Book) : void
+    abstract createBook (book : Book) : void
 
-    getBook (id : number) : Book | null
+    abstract getBook (id : number) : Book | null
 
-    getBooks () : Book[]
+    abstract getBooks () : Book[]
 
-    updateBook (id : number, book : Book) : void
+    abstract updateBook (id : number, book : Book) : void
 
-    deleteBook (id : number) : void
+    abstract deleteBook (id : number) : void
 }
