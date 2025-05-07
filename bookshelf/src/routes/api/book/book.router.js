@@ -1,13 +1,17 @@
-const express         = require('express');
-const Book            = require('../../../models/Book');
-const router          = express.Router();
-const coverFileMulter = require('../../../middleware/fileCover');
-const bookFileMulter  = require('../../../middleware/fileBook');
+const express              = require('express');
+const Book                 = require('../../../models/Book');
+const router               = express.Router();
+const coverFileMulter      = require('../../../middleware/fileCover');
+const bookFileMulter       = require('../../../middleware/fileBook');
+const { container }        = require('../../../container');
+const MongoBooksRepository = require('../../../repositories/MongoBooksRepository');
+
+const booksRepo = container.get(MongoBooksRepository);
 
 module.exports = () => {
     router.get('/', async (req, res) => {
         try {
-            const books = await Book.find().select('-__v');
+            const books = await booksRepo.getBooks();
             res.json(books);
         }
         catch (err) {
@@ -26,17 +30,15 @@ module.exports = () => {
               } = req.body;
 
         if (title && authors) {
-            const newBook = new Book({
-                title,
-                authors,
-                description,
-                favorite,
-                fileCover,
-                fileName,
-            });
-
             try {
-                await newBook.save();
+                const newBook = await booksRepo.createBook({
+                    title,
+                    authors,
+                    description,
+                    favorite,
+                    fileCover,
+                    fileName,
+                });
 
                 res.status(201);
                 res.json(newBook);
@@ -55,7 +57,7 @@ module.exports = () => {
         const { id } = req.params;
 
         try {
-            const book = await Book.findById(id).select('-__v');
+            const book = await booksRepo.getBook(id);
             if (book) {
                 res.json(book);
             }
@@ -101,7 +103,7 @@ module.exports = () => {
         }
 
         try {
-            const book = await Book.findByIdAndUpdate(id, updatedBook);
+            const book = await booksRepo.updateBook(id, updatedBook);
             if (book) {
                 res.json(book);
             }
@@ -119,7 +121,7 @@ module.exports = () => {
         const { id } = req.params;
 
         try {
-            await Book.deleteOne({ _id: id });
+            await booksRepo.deleteBook(id);
             res.json('ok');
         }
         catch (e) {
