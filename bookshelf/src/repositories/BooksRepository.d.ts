@@ -1,4 +1,4 @@
-import { Book } from './Book';
+import type { Book } from '../models/Book.d.ts';
 
 export abstract class BooksRepository {
     abstract createBook (book : Book) : void
