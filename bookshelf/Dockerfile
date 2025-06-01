@@ -4,9 +4,8 @@ WORKDIR /app
 
 ARG NODE_ENV=production
 
-COPY package.json yarn.lock tsconfig.json ./
-RUN yarn install
-COPY ./src ./src/
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
+COPY . .
 RUN yarn build
-
 CMD ["yarn", "production"]
