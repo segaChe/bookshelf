@@ -9,7 +9,7 @@ export default class CounterConnector {
         this.port = port;
     }
 
-    increaseBookCounterById (id: any) {
+    increaseBookCounterById (id: string) {
         const request = http
             .request(
                 `${ this.baseUrl }:${ this.port }/${ id }/incr`,
@@ -33,7 +33,7 @@ export default class CounterConnector {
         request.end();
     }
 
-    getBookCountById (id: any, successCallback = (data: any) => data) {
+    getBookCountById (id: string, successCallback = (data: any) => data) {
         return http
             .get(`${ this.baseUrl }:${ this.port }/${ id }`, (res) => {
                 const { statusCode } = res;

@@ -12,7 +12,7 @@ class MongoBooksRepository implements BooksRepository {
     constructor (@inject(TYPES.BookModel) private bookModel : BookModelType) {
     }
 
-    async createBook (book : any): Promise<IBook> {
+    async createBook (book : Partial<IBook>): Promise<IBook> {
         const newBook = new this.bookModel(book);
         return newBook.save();
     }

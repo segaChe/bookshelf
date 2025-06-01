@@ -1,8 +1,9 @@
-import express from 'express';
+import express    from 'express';
+import type Store from '../../models/Store';
 
 const router = express.Router();
 
-export default (store: any) => {
+export default (store: Store) => {
     router.get('/', (req, res) => {
         res.render('index', {
             title: 'Books',

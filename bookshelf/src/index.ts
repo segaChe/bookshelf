@@ -32,7 +32,7 @@ app.use('/api/books', apiBooksRouter());
 
 app.use(errorMiddleware);
 
-async function start (PORT: any, UrlDB: any) {
+async function start (PORT: number, UrlDB: string) {
     try {
         await mongoose.connect(UrlDB);
         app.listen(PORT);
@@ -43,7 +43,7 @@ async function start (PORT: any, UrlDB: any) {
 }
 
 const UrlDB = process.env.MONGO_DB_URL;
-const PORT  = process.env.PORT || 3000;
+const PORT  = Number(process.env.PORT || 3000);
 start(PORT, UrlDB)
     .then (r => {
         console.log('Started!');

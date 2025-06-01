@@ -32,7 +32,7 @@ export default () => {
 
         if (title && authors) {
             try {
-                const newBook = await booksRepo.createBook({
+                const newBook: Partial<IBook> = await booksRepo.createBook({
                     title,
                     authors,
                     description,
