@@ -8,7 +8,7 @@ import apiBooksRouter from './routes/api/book/book.router';
 import indexRouter from './routes/view/index.router';
 import bookRouter from './routes/view/book/book.router';
 
-import Store from './models/Store.js';
+import Store from './models/Store';
 import CounterConnector from './Connectors/CounterConnector';
 
 const store            = new Store();
