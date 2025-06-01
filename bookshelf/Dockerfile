@@ -8,6 +8,5 @@ COPY package.json yarn.lock tsconfig.json ./
 RUN yarn install
 COPY ./src ./src/
 RUN yarn build
-COPY ./dist ./dist/
 
 CMD ["yarn", "production"]
