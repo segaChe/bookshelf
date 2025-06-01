@@ -2,13 +2,18 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
-    "module": "commonjs",
-    "target": "es6",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "es2022",
     "removeComments": true,
     "preserveConstEnums": true,
     "sourceMap": true,
     "strict": true,
-    "strictNullChecks": false
+    "strictNullChecks": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "lib": ["ES2022", "DOM"],
+    "types": ["reflect-metadata", "node"]
   },
   "include": [
     "src/**/*"

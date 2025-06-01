@@ -1,7 +1,8 @@
-const express = require('express');
+import express from 'express';
+import type IBook            from '../../../models/IBook';
 const router  = express.Router();
 
-module.exports = (store, counterConnector) => {
+export default (store: any, counterConnector: any) => {
 
     router.get('/:id', async (req, res) => {
         const { id } = req.params;
@@ -10,7 +11,7 @@ module.exports = (store, counterConnector) => {
         if (book) {
             try {
                 // todo: сомнительное решение
-                await counterConnector.getBookCountById(id, (data) => {
+                await counterConnector.getBookCountById(id, (data: any) => {
                     res.render('book/view', {
                         book,
                         counter: Number(data.counter) + 1,
@@ -52,8 +53,8 @@ module.exports = (store, counterConnector) => {
                   favorite,
                   fileCover,
                   fileName,
-              }           = req.body;
-        const updatedBook = {};
+              }           = req.body as Partial<IBook>;
+        const updatedBook: Partial<IBook> = { title, authors };
 
         if (title !== undefined) {
             updatedBook.title = title;

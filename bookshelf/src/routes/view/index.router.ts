@@ -1,8 +1,8 @@
-const express = require('express');
-const Book    = require('../../models/Book');
-const router  = express.Router();
+import express from 'express';
 
-module.exports = (store) => {
+const router = express.Router();
+
+export default (store: any) => {
     router.get('/', (req, res) => {
         res.render('index', {
             title: 'Books',
@@ -25,15 +25,15 @@ module.exports = (store) => {
               } = req.body;
 
         if (title && authors) {
-            const newBook = new Book({
-                title,
-                authors,
-                description,
-            });
+            /*const newBook = new Book({
+                                         title,
+                                         authors,
+                                         description,
+                                     });
             store.addBook(newBook);
 
             res.status(201);
-            res.redirect(`/book/${newBook.id}`);
+            res.redirect(`/book/${ newBook.id }`);*/
         }
         else {
             res.status(400);

@@ -1,20 +1,20 @@
-require('reflect-metadata');
-const express  = require('express');
-const mongoose = require('mongoose');
+import 'reflect-metadata';
+import express from 'express';
+import * as mongoose from 'mongoose';
 
-const errorMiddleware = require('./middleware/error');
-const apiUserRouter   = require('./routes/api/user/user.router');
-const apiBooksRouter  = require('./routes/api/book/book.router');
-const indexRouter     = require('./routes/view/index.router');
-const bookRouter      = require('./routes/view/book/book.router');
+import errorMiddleware from './middleware/error';
+import apiUserRouter from './routes/api/user/user.router';
+import apiBooksRouter from './routes/api/book/book.router';
+import indexRouter from './routes/view/index.router';
+import bookRouter from './routes/view/book/book.router';
 
-const Store            = require('./models/Store.js');
-const CounterConnector = require('./Connectors/CounterConnector');
+import Store from './models/Store.js';
+import CounterConnector from './Connectors/CounterConnector';
 
 const store            = new Store();
 const counterConnector = new CounterConnector({
     baseUrl: process.env.COUNTER_URL,
-    port   : process.env.COUNTER_PORT,
+    port   : Number(process.env.COUNTER_PORT),
 });
 
 const app = express();
@@ -32,7 +32,7 @@ app.use('/api/books', apiBooksRouter());
 
 app.use(errorMiddleware);
 
-async function start (PORT, UrlDB) {
+async function start (PORT: any, UrlDB: any) {
     try {
         await mongoose.connect(UrlDB);
         app.listen(PORT);
@@ -44,4 +44,7 @@ async function start (PORT, UrlDB) {
 
 const UrlDB = process.env.MONGO_DB_URL;
 const PORT  = process.env.PORT || 3000;
-start(PORT, UrlDB);
+start(PORT, UrlDB)
+    .then (r => {
+        console.log('Started!');
+    });

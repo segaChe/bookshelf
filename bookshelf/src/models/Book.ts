@@ -1,6 +1,7 @@
-const { Schema, model } = require('mongoose');
+import { Schema, model, Model } from 'mongoose';
+import type IBook from './IBook.ts';
 
-const BookSchema = new Schema({
+const BookSchema: Schema = new Schema<IBook>({
     title      : { type: String, required: true },
     authors    : { type: String, required: true },
     description: { type: String, default: '' },
@@ -8,6 +9,12 @@ const BookSchema = new Schema({
     fileName   : { type: String, default: '' },
     fileBook   : { type: String, default: '' },
     favorite   : { type: Boolean, default: false },
+}, {
+    timestamps: true
 })
 
-module.exports = model('Book', BookSchema);
+export function createBookModel(): Model<IBook> {
+    return model<IBook>('Book', BookSchema);
+}
+
+export type BookModelType = Model<IBook>;
