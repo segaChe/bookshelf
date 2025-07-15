@@ -1,14 +1,15 @@
-const express              = require('express');
-const Book                 = require('../../../models/Book');
-const router               = express.Router();
-const coverFileMulter      = require('../../../middleware/fileCover');
-const bookFileMulter       = require('../../../middleware/fileBook');
-const { container }        = require('../../../container');
-const MongoBooksRepository = require('../../../repositories/MongoBooksRepository');
+import express              from 'express';
+import type IBook           from '../../../models/IBook';
+import coverFileMulter      from '../../../middleware/fileCover';
+import bookFileMulter       from '../../../middleware/fileBook';
+import { container }        from '../../../container/';
+import { BooksRepository }  from '../../../repositories/BooksRepository';
+import { TYPES }            from '../../../container/types';
 
-const booksRepo = container.get(MongoBooksRepository);
+const router = express.Router();
+const booksRepo = container.get<BooksRepository>(TYPES.BooksRepository);
 
-module.exports = () => {
+export default () => {
     router.get('/', async (req, res) => {
         try {
             const books = await booksRepo.getBooks();
@@ -27,11 +28,11 @@ module.exports = () => {
                   favorite    = false,
                   fileCover   = '',
                   fileName    = '',
-              } = req.body;
+              } = req.body as Partial<IBook>;
 
         if (title && authors) {
             try {
-                const newBook = await booksRepo.createBook({
+                const newBook: Partial<IBook> = await booksRepo.createBook({
                     title,
                     authors,
                     description,
@@ -72,7 +73,7 @@ module.exports = () => {
     });
 
     router.put('/:id', async (req, res) => {
-        const { id }      = req.params;
+        const { id } = req.params;
         const {
                   title,
                   authors,
@@ -80,8 +81,8 @@ module.exports = () => {
                   favorite,
                   fileCover,
                   fileName,
-              }           = req.body;
-        const updatedBook = {};
+              } = req.body as Partial<IBook>;
+        const updatedBook : Partial<IBook> = { title, authors };
 
         if (title !== undefined) {
             updatedBook.title = title;
@@ -134,11 +135,11 @@ module.exports = () => {
         coverFileMulter.single('cover'),
         async (req, res) => {
             if (req.file) {
-                const { id }   = req.params;
+                const { id } = req.params;
                 const { path } = req.file;
 
                 try {
-                    const book = await Book.findByIdAndUpdate(id, { fileCover: path });
+                    const book = await booksRepo.updateBook(id, { fileCover: path });
                     if (book) {
                         res.json(book);
                     }
@@ -162,11 +163,11 @@ module.exports = () => {
         bookFileMulter.single('book'),
         async (req, res) => {
             if (req.file) {
-                const { id }   = req.params;
+                const { id } = req.params;
                 const { path } = req.file;
 
                 try {
-                    const book = await Book.findByIdAndUpdate(id, { fileBook: path });
+                    const book = await booksRepo.updateBook(id, { fileBook: path });
                     if (book) {
                         res.json(book);
                     }
@@ -191,9 +192,9 @@ module.exports = () => {
             const { id } = req.params;
 
             try {
-                const book = await Book.findById(id).select('-__v');
+                const book : IBook = await booksRepo.getBook(id);
                 const file = book.fileBook;
-                res.download(file, `${book.name} - ${book.authors}`);
+                res.download(file, `${ book.title } - ${ book.authors }`);
             }
             catch (e) {
                 res.status(500).json(e);

@@ -1,41 +1,44 @@
-const http = require('node:http');
+import * as http from 'node:http';
 
-class CounterConnector {
-    constructor ({ baseUrl, port }) {
+export default class CounterConnector {
+    private readonly baseUrl : string;
+    private readonly port : number;
+
+    constructor ({ baseUrl, port } : { baseUrl : string, port : number }) {
         this.baseUrl = baseUrl;
-        this.port    = port;
+        this.port = port;
     }
 
-    increaseBookCounterById (id) {
+    increaseBookCounterById (id: string) {
         const request = http
             .request(
-                `${this.baseUrl}:${this.port}/${id}/incr`,
+                `${ this.baseUrl }:${ this.port }/${ id }/incr`,
                 { method: 'POST' },
                 (response) => {
                     response.on('end', () => {
-                        console.log(`Status code: ${response.statusCode}`);
+                        console.log(`Status code: ${ response.statusCode }`);
                     });
 
                     response.on('error', (error) => {
-                        console.error(`problem with request: ${error.message}`);
+                        console.error(`problem with request: ${ error.message }`);
                     });
                 },
             );
 
         request.on('error', (error) => {
-            console.error(`problem with request: ${error.message}`);
+            console.error(`problem with request: ${ error.message }`);
         });
 
         request.write('ok');
         request.end();
     }
 
-    getBookCountById (id, successCallback = (data) => data) {
+    getBookCountById (id: string, successCallback = (data: any) => data) {
         return http
-            .get(`${this.baseUrl}:${this.port}/${id}`, (res) => {
+            .get(`${ this.baseUrl }:${ this.port }/${ id }`, (res) => {
                 const { statusCode } = res;
                 if (statusCode !== 200) {
-                    console.log(`statusCode: ${statusCode}`);
+                    console.log(`statusCode: ${ statusCode }`);
                     return;
                 }
 
@@ -58,5 +61,3 @@ class CounterConnector {
             });
     }
 }
-
-module.exports = CounterConnector;

@@ -1,16 +1,20 @@
-const express = require('express');
-const router  = express.Router();
+import express               from 'express';
+import type IBook            from '../../../models/IBook';
+import type Store            from '../../../models/Store';
+import type CounterConnector from '../../../Connectors/CounterConnector';
 
-module.exports = (store, counterConnector) => {
+const router = express.Router();
+
+export default (store : Store, counterConnector : CounterConnector) => {
 
     router.get('/:id', async (req, res) => {
         const { id } = req.params;
-        const book   = store.getBookById(id);
+        const book = store.getBookById(id);
 
         if (book) {
             try {
                 // todo: сомнительное решение
-                await counterConnector.getBookCountById(id, (data) => {
+                await counterConnector.getBookCountById(id, (data : any) => {
                     res.render('book/view', {
                         book,
                         counter: Number(data.counter) + 1,
@@ -30,7 +34,7 @@ module.exports = (store, counterConnector) => {
 
     router.get('/:id/update', (req, res) => {
         const { id } = req.params;
-        const book   = store.getBookById(id);
+        const book = store.getBookById(id);
 
         if (book) {
             res.render('book/update', {
@@ -44,7 +48,7 @@ module.exports = (store, counterConnector) => {
     });
 
     router.post('/:id/update', (req, res) => {
-        const { id }      = req.params;
+        const { id } = req.params;
         const {
                   title,
                   authors,
@@ -52,8 +56,8 @@ module.exports = (store, counterConnector) => {
                   favorite,
                   fileCover,
                   fileName,
-              }           = req.body;
-        const updatedBook = {};
+              } = req.body as Partial<IBook>;
+        const updatedBook : Partial<IBook> = { title, authors };
 
         if (title !== undefined) {
             updatedBook.title = title;
@@ -76,7 +80,7 @@ module.exports = (store, counterConnector) => {
 
         const book = store.updateBook(updatedBook, id);
         if (book) {
-            res.redirect(`/book/${book.id}`);
+            res.redirect(`/book/${ book.id }`);
         }
         else {
             res.redirect('/404');
@@ -84,9 +88,9 @@ module.exports = (store, counterConnector) => {
     });
 
     router.post('/:id/delete', (req, res) => {
-        const books  = store.getBooks();
+        const books = store.getBooks();
         const { id } = req.params;
-        const idx    = store.getIndex(id);
+        const idx = store.getIndex(id);
 
         if (idx !== -1) {
             books.splice(idx, 1);

@@ -1,13 +1,13 @@
-import type { Book } from '../models/Book.d.ts';
+import type IBook from '../models/IBook';
 
-export abstract class BooksRepository {
-    abstract createBook (book : Book) : void
+export interface BooksRepository {
+    createBook: (book : Partial<IBook>) => Promise<IBook>;
 
-    abstract getBook (id : number) : Book | null
+    getBook: (id : string) => Promise<IBook | null>;
 
-    abstract getBooks () : Book[]
+    getBooks: () => Promise<IBook[]>;
 
-    abstract updateBook (id : number, book : Book) : void
+    updateBook: (id : string, book : Partial<IBook>) => Promise<IBook | null>;
 
-    abstract deleteBook (id : number) : void
+    deleteBook: (id : string) => Promise<boolean>;
 }
