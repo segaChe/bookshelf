@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { v4 as uuid } from 'uuid';
 import { Book } from './book.entity';
 
 @Injectable()
@@ -19,7 +20,7 @@ export class BooksService {
     }
 
     create(bookData: Partial<Omit<Book, 'id'>>): Book {
-        const newBook: Book = { id: `book-${this.idCounter++}`, ...bookData } as Book;
+        const newBook: Book = { id: uuid(), ...bookData } as Book;
         this.books.push(newBook);
         return newBook;
     }
