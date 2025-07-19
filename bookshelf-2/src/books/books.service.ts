@@ -1,41 +1,33 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { v4 as uuid } from 'uuid';
-import { Book } from './book.entity';
+import { Injectable, NotFoundException }                         from '@nestjs/common';
+import { InjectModel, InjectConnection }                         from '@nestjs/mongoose';
+import { Model, Connection, HydratedDocument, QueryWithHelpers } from 'mongoose';
+import { Book, BookDocument }                                    from './book.schema';
 
 @Injectable()
 export class BooksService {
-    private books: Book[] = [];
-    private idCounter = 1;
+    constructor (
+        @InjectModel(Book.name) private BookModel : Model<BookDocument>,
+        @InjectConnection() private connection : Connection,
+    ) {}
 
-    findAll(): Book[] {
-        return this.books;
+    findAll () : Promise<BookDocument[]> {
+        return this.BookModel.find().exec();
     }
 
-    findOne(id: string): Book {
-        const book = this.books.find((b) => b.id === id);
-        if (!book) {
-            throw new NotFoundException(`Book with id ${id} not found`);
-        }
-        return book;
+    findOne (id : string) : Promise<BookDocument|null> {
+        return this.BookModel.findById(id).exec();
     }
 
-    create(bookData: Partial<Omit<Book, 'id'>>): Book {
-        const newBook: Book = { id: uuid(), ...bookData } as Book;
-        this.books.push(newBook);
-        return newBook;
+    create (bookData : Partial<Omit<Book, 'id'>>) : Promise<BookDocument> {
+        const newBook = new this.BookModel(bookData);
+        return newBook.save();
     }
 
-    update(id: string, updatedData: Partial<Omit<Book, 'id'>>): Book {
-        const book: Book = this.findOne(id);
-        Object.assign(book, updatedData);
-        return book;
+    update (id : string, updatedData : Partial<Omit<Book, 'id'>>) : QueryWithHelpers<HydratedDocument<BookDocument, {}, {}> | null, HydratedDocument<BookDocument, {}, {}>, {}, BookDocument> {
+        return this.BookModel.findByIdAndUpdate(id, updatedData, { new: true });
     }
 
-    remove(id: string): void {
-        const index = this.books.findIndex((b) => b.id === id);
-        if (index === -1) {
-            throw new NotFoundException(`Book with id ${id} not found`);
-        }
-        this.books.splice(index, 1);
+    remove (id : string) : QueryWithHelpers<HydratedDocument<BookDocument, {}, {}> | null, HydratedDocument<BookDocument, {}, {}>, {}, BookDocument> {
+        return this.BookModel.findByIdAndDelete({ _id: id });
     }
 }
